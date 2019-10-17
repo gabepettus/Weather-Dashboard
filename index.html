@@ -6,6 +6,7 @@
   <meta http-equiv='X-UA-Compatible' content='ie=edge'>
 
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
+  <link rel='stylesheet' href='style.css'>
 
   <title>Gabe's Weather Dashboard</title>
 </head>
@@ -17,82 +18,95 @@
   <div class='container'>
     <div class='row'>
       <div class='col-md-3'>
-        <div class='card-mt-2'>
+        <div class='card search-section'>
           <div class='card-body'>
-            <h5> City Search</h5>
-            <input name='city-search'></input>
+            <label name="city-search">Search For a City:</label>
+            <div class="input-group mb-3">
+              <input name="city-search" type="text" class="form-control" placeholder="Search">
+                <div class="input-group-append">
+                  <button class="btn btn-success" type="submit">ic</button>
+                </div>
+              </div>
+            <!-- <h5>Search For a City</h5> -->
+            <!-- <input name='city-search'></input> -->
             <!-- icon here -->
-            <i>icon</i>
+            <!-- <i>icon</i> -->
             <!-- past cities here -->
             <div id='past-cities'></div>
+            <div>Denver</div>
+            <div>Atlanta</div>
+
           </div>
         </div>
       </div>
       <div class='col-md-9'>
         <div class='row'>
-          <div class='card-mt-2'>
+          <div class='card'>
             <div class='card-body'>
-              <h5 class='card-title'>Card title</h5>
-              <h6 class='card-subtitle mb-2 text-muted'>Card subtitle</h6>
-              <p class='card-text'>Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <h5 class='card-title'>City</h5><span id='curWeathIcn'></span>
+              <ul>
+                <li class='card-text'>Temp:</li> <span id='tempDay-0'></span>
+                <li class='card-text'>Humidity:</li> <span id='humDay-0'></span>
+                <li class='card-text'>WindSpeed:</li> <span id='windDay-0'></span>
+                <li class='card-text'>UV index:</li> <span id='uvDay-0'></span>
+              </ul>
             </div>
           </div>
       </div>
       <div class='row'>
-        <div class="col-md-2">
-          <div class='card-mt-2'>
-            <div class='card-body'>
-              <h5 class='card-title'>Card title</h5>
-              <h6 class='card-subtitle mb-2 text-muted'>Card subtitle</h6>
-              <p class='card-text'>Some quick example text to</p>
+          <h2 class='card-title'>5-Day Forcast</h2>
+      </div>
+      <div class='row' id='forecast'>
+          <div class="col mx-1">
+            <div class='card-body forecast-card'>
+              <h5 class='card-title' id='date-1'>date</h5>
+              <ul>
+                <li id='iconDay-1'>icon</li>
+                <li>Temp:</li><span id='tempDay-1'></span>
+                <li>humidity</li><span id='humDay-1'></span>
+              </ul>
             </div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class='card-mt-2'>
+          </div> 
+          <div class="col mx-1">
             <div class='card-body'>
-              <h5 class='card-title'>Card title</h5>
-              <h6 class='card-subtitle mb-2 text-muted'>Card subtitle</h6>
-              <p class='card-text'>Some quick example text to</p>
+              <h5 class='card-title' id='date-1'>date</h5>
+              <ul>
+                <li id='iconDay-1'>icon</li>
+                <li>Temp:</li><span id='tempDay-1'></span>
+                <li>humidity</li><span id='humDay-1'></span>
+              </ul>
             </div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class='card-mt-2'>
+          </div> 
+          <div class="col mx-1">
             <div class='card-body'>
-              <h5 class='card-title'>Card title</h5>
-              <h6 class='card-subtitle mb-2 text-muted'>Card subtitle</h6>
-              <p class='card-text'>Some quick example text to</p>
+              <h5 class='card-title' id='date-1'>date</h5>
+              <ul>
+                <li id='iconDay-1'>icon</li>
+                <li>Temp:</li><span id='tempDay-1'></span>
+                <li>humidity</li><span id='humDay-1'></span>
+              </ul>
             </div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class='card-mt-2'>
+          </div> 
+          <div class="col mx-1">
             <div class='card-body'>
-              <h5 class='card-title'>Card title</h5>
-              <h6 class='card-subtitle mb-2 text-muted'>Card subtitle</h6>
-              <p class='card-text'>Some quick example text to</p>
+              <h5 class='card-title' id='date-1'>date</h5>
+              <ul>
+                <li id='iconDay-1'>icon</li>
+                <li>Temp:</li><span id='tempDay-1'></span>
+                <li>humidity</li><span id='humDay-1'></span>
+              </ul>
             </div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class='card-mt-2'>
+          </div> 
+          <div class="col mx-1">
             <div class='card-body'>
-              <h5 class='card-title'>Card title</h5>
-              <h6 class='card-subtitle mb-2 text-muted'>Card subtitle</h6>
-              <p class='card-text'>Some quick example text to</p>
+              <h5 class='card-title' id='date-1'>date</h5>
+              <ul>
+                <li id='iconDay-1'>icon</li>
+                <li>Temp:</li><span id='tempDay-1'></span>
+                <li>humidity</li><span id='humDay-1'></span>
+              </ul>
             </div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class='card-mt-2'>
-            <div class='card-body'>
-              <h5 class='card-title'>Card title</h5>
-              <h6 class='card-subtitle mb-2 text-muted'>Card subtitle</h6>
-              <p class='card-text'>Some quick example text to</p>
-            </div>
-          </div>
-        </div>
+          </div> 
       </div>
     </div>
   </div>

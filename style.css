@@ -1,0 +1,21 @@
+div {
+  /* border: solid; */
+}
+
+ul{ 
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.card {
+  width: 100%;
+}
+
+.forecast-card {
+  background-color: pink;
+}
+
+
+.search-section {
+  height: 100%;
+}
