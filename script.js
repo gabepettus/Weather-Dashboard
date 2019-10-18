@@ -83,7 +83,7 @@ $(document).ready(function() {
     let weatherObj = {};
 
     // set queryURL based on type of query
-    queryURL = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&cnt=5&appid=${apiKey}`;
+    queryURL = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&cnt=5&units=imperial&appid=${apiKey}`;
 
     // Create an AJAX call to retrieve data Log the data in console
     $.ajax({

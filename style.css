@@ -8,7 +8,7 @@ ul{
 }
 
 li{ 
-  font-size: 12pt;
+  font-size: 10pt;
 }
 
 .col{ 
@@ -16,7 +16,7 @@ li{
 }
 
 .card {
-  width: 100%;
+  /* width: 100%; */
 }
 
 .forecast-card {
