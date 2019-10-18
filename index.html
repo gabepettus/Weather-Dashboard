@@ -20,11 +20,11 @@
       <div class='col-md-3'>
         <div class='card search-section'>
           <div class='card-body'>
-            <label name="city-search">Search For a City:</label>
+            <label>Search For a City:</label>
             <div class="input-group mb-3">
-              <input name="city-search" type="text" class="form-control" placeholder="Search">
+              <input id="city-search" type="text" class="form-control" placeholder="Denver, CO">
                 <div class="input-group-append">
-                  <button class="btn btn-success" type="submit">ic</button>
+                  <button id='getWeather' class="btn btn-success" type="submit">ic</button>
                 </div>
               </div>
             <!-- <h5>Search For a City</h5> -->
@@ -33,7 +33,7 @@
             <!-- <i>icon</i> -->
             <!-- past cities here -->
             <div id='past-cities'></div>
-            <div>Denver</div>
+            <div>Bujumbura,Burundi</div>
             <div>Atlanta</div>
 
           </div>
@@ -43,12 +43,12 @@
         <div class='row'>
           <div class='card'>
             <div class='card-body'>
-              <h5 class='card-title'>City</h5><span id='curWeathIcn'></span>
+              <h5 class='card-title' id='cityName'>City</h5><span id='curWeathIcn'></span>
               <ul>
-                <li class='card-text'>Temp:</li> <span id='tempDay-0'></span>
-                <li class='card-text'>Humidity:</li> <span id='humDay-0'></span>
-                <li class='card-text'>WindSpeed:</li> <span id='windDay-0'></span>
-                <li class='card-text'>UV index:</li> <span id='uvDay-0'></span>
+                <li class='card-text' id='curTemp'>Temp:</li>
+                <li class='card-text' id='curHum'>Humidity:</li>
+                <li class='card-text' id='curWind'>Windspeed:</li>
+                <li class='card-text' id='curUv'>UV Index:</li>
               </ul>
             </div>
           </div>
