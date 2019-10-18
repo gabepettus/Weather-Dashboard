@@ -123,6 +123,44 @@ $(document).ready(function() {
 
   function drawForecast(cur) {
     if (test) { console.log('drawForecast - cur:', cur); }
+
+    for (let i=0; i<cur.length; i++) {
+      //
+       let $colmx1 = $('<div class="col mx-1">');
+       let $cardBody = $('<div class="card-body forecast-card">');
+       let $cardTitle = $('<h5 class="card-title">');
+       $cardTitle.text(cur[i].date);
+
+       let $ul = $('<ul>');
+
+       let $iconLi = $('<li>');
+       let $iconI = $('<i>');
+       $iconI.attr = $('alt',cur[i].weather);
+
+       let $tempMinLi = $('<li>');
+       $tempMinLi.text('Temp: ' + cur[i].minTemp);
+
+       let $tempMaxLi = $('<li>');
+       $tempMaxLi.text('Temp: ' + cur[i].maxTemp);
+
+       let $humLi = $('<li>');
+       $humLi.text('Humidity: ' + cur[i].humidity);
+
+       // assemble element
+       $iconLi.append($iconI);
+
+       $ul.append($iconLi);
+       $ul.append($tempMinLi);
+       $ul.append($tempMaxLi);
+       $ul.append($humLi);
+
+       $cardTitle.append($ul);
+       $cardBody.append($cardTitle);
+       $colmx1.append($cardBody);
+
+      //  $('#forecast').append($colmx1);
+       $('#forecast').append($colmx1);
+    }
   };
 
   function getUvIndex() {
