@@ -1,10 +1,12 @@
-$(document).ready(function() {
+$(document).ready(function () {
   let test = true;
   // use school key inorder to get forecast data
   const apiKey = "166a433c57516f51dfab1f7edaed8413";
 
+  //
+
   // pull current location
-  $('#getWeather').on('click',function() {
+  $('#getWeather').on('click', function () {
     // get location from user input box
     let location = $('#city-search').val();
     if (test) { console.log('location:' + location); }
@@ -18,25 +20,52 @@ $(document).ready(function() {
     // returns arr ["MM/DD/YYYY, HH:MM:SS AM", "MM/DD/YYYY", "HH:MM:SS AM"]
     if (test) { console.log(`convertData - epoch: ${epoch}`); }
     let readable = [];
-    let myDate = new Date( epoch * 1000);
+    let myDate = new Date(epoch * 1000);
 
     // local time
     // returns string "MM/DD/YYYY, HH:MM:SS AM"
-    readable[0] = ( myDate.toLocaleString() );
-    readable[1] = ( (myDate.toLocaleString().split(", "))[0] );
-    readable[2] = ( (myDate.toLocaleString().split(", "))[1] );
+    readable[0] = (myDate.toLocaleString());
+    readable[1] = ((myDate.toLocaleString().split(", "))[0]);
+    readable[2] = ((myDate.toLocaleString().split(", "))[1]);
 
     if (test) { console.log(` readable[0]: ${readable[0]}`); }
     return readable;
   }
 
-  function getCurLocation () {
-    //insert API
+  function getCurLocation() {
+    // This function is based on geoFindMe function found at
     //https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API
-    if (test) { console.log('getCurLocation'); }
+    //this function return an object with the lat and lon of current location
+    if (test) { console.log("getCurLocation"); }
 
-    let location = '';
-    return location;
+    let location = {};
+
+    function success(position) {
+      if (test) { console.log(" success"); }
+      if (test) { console.log("latitude: ", position.coords.latitude); }
+      if (test) { console.log("longitude: ", position.coords.longitude); }
+
+      location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        success: true
+      }
+      if (test) { console.log(" success location", location); }
+      getCurWeather(location);
+      return location;
+    }
+
+    function error() {
+      location = { success: false }
+      console.log('Could not get location');
+      return location;
+    }
+
+    if (!navigator.geolocation) {
+      console.log('Geolocation is not supported by your browser');
+    } else {
+      navigator.geolocation.getCurrentPosition(success, error);
+    }
   };
 
   function getCurWeather(loc) {
@@ -55,7 +84,7 @@ $(document).ready(function() {
     $.ajax({
       url: queryURL,
       method: 'GET'
-    }).then(function(response) {
+    }).then(function (response) {
       console.log(response);
 
       weatherObj = {
@@ -89,10 +118,10 @@ $(document).ready(function() {
     $.ajax({
       url: queryURL,
       method: 'GET'
-    }).then(function(response) {
+    }).then(function (response) {
       console.log(response);
 
-      for (let i=0; i<response.list.length; i++) {
+      for (let i = 0; i < response.list.length; i++) {
         let cur = response.list[i]
         // TODO check for errors/no data
         weatherObj = {
@@ -111,55 +140,55 @@ $(document).ready(function() {
   };
 
   function drawCurWeather(cur) {
-  // function to draw  weather all days
-  // need logic to pick variables
+    // function to draw  weather all days
+    // need logic to pick variables
     if (test) { console.log('drawCurWeather - cur:', cur); }
-      $('#cityName').text(cur.city + " (" + cur.date +")");
-      $('#curTemp').text("Temp: " + cur.temp + " F");
-      $('#curHum').text("Humidity: " + cur.humidity + "%");
-      $('#curWind').text("Windspeed: " + cur.wind + " MPH");
-      $('#curUv').html(cur.uvHTML);
+    $('#cityName').text(cur.city + " (" + cur.date + ")");
+    $('#curTemp').text("Temp: " + cur.temp + " F");
+    $('#curHum').text("Humidity: " + cur.humidity + "%");
+    $('#curWind').text("Windspeed: " + cur.wind + " MPH");
+    $('#curUv').html(cur.uvHTML);
   };
 
   function drawForecast(cur) {
     if (test) { console.log('drawForecast - cur:', cur); }
 
-    for (let i=0; i<cur.length; i++) {
+    for (let i = 0; i < cur.length; i++) {
       //
-       let $colmx1 = $('<div class="col mx-1">');
-       let $cardBody = $('<div class="card-body forecast-card">');
-       let $cardTitle = $('<h5 class="card-title">');
-       $cardTitle.text(cur[i].date);
+      let $colmx1 = $('<div class="col mx-1">');
+      let $cardBody = $('<div class="card-body forecast-card">');
+      let $cardTitle = $('<h5 class="card-title">');
+      $cardTitle.text(cur[i].date);
 
-       let $ul = $('<ul>');
+      let $ul = $('<ul>');
 
-       let $iconLi = $('<li>');
-       let $iconI = $('<i>');
-       $iconI.attr = $('alt',cur[i].weather);
+      let $iconLi = $('<li>');
+      let $iconI = $('<i>');
+      $iconI.attr = $('alt', cur[i].weather);
 
-       let $tempMinLi = $('<li>');
-       $tempMinLi.text('Temp: ' + cur[i].minTemp);
+      let $tempMinLi = $('<li>');
+      $tempMinLi.text('Min Temp: ' + cur[i].minTemp + " F");
 
-       let $tempMaxLi = $('<li>');
-       $tempMaxLi.text('Temp: ' + cur[i].maxTemp);
+      let $tempMaxLi = $('<li>');
+      $tempMaxLi.text('Max Temp: ' + cur[i].maxTemp + " F");
 
-       let $humLi = $('<li>');
-       $humLi.text('Humidity: ' + cur[i].humidity);
+      let $humLi = $('<li>');
+      $humLi.text('Humidity: ' + cur[i].humidity + "%");
 
-       // assemble element
-       $iconLi.append($iconI);
+      // assemble element
+      $iconLi.append($iconI);
 
-       $ul.append($iconLi);
-       $ul.append($tempMinLi);
-       $ul.append($tempMaxLi);
-       $ul.append($humLi);
+      $ul.append($iconLi);
+      $ul.append($tempMinLi);
+      $ul.append($tempMaxLi);
+      $ul.append($humLi);
 
-       $cardTitle.append($ul);
-       $cardBody.append($cardTitle);
-       $colmx1.append($cardBody);
+      $cardTitle.append($ul);
+      $cardBody.append($cardTitle);
+      $colmx1.append($cardBody);
 
       //  $('#forecast').append($colmx1);
-       $('#forecast').append($colmx1);
+      $('#forecast').append($colmx1);
     }
   };
 
@@ -170,17 +199,19 @@ $(document).ready(function() {
     let color = title + '<span style="background-color: blue; padding: 0 7px 0 7px;">5</span>';
     //TODO logic for color
     // $(this).attr('background-color',color);
-  return color;
+    return color;
   };
 
   // weather icon??? part of api?
 
-  function getHistory () {
-  // function to pull city history from local memory
+  function getHistory() {
+    // function to pull city history from local memory
     if (test) { console.log('getHistory'); }
     let historyArr = [];
 
     return historyArr;
   };
 
+  const location = getCurLocation();
+  if (test) { console.log("main location :", location) };
 });
