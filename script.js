@@ -10,9 +10,10 @@ $(document).ready(function () {
   // pull current location
   $('#getWeather').on('click', function () {
     // get location from user input box
-    let location = $('#city-search').val();
+    let location = $('#city-search').val().trim().toUpperCase();
     if (test) { console.log('location:' + location); }
 
+    updateCityStore(location);
     getCurWeather(location);
     getForecastWeather(location);
   });
@@ -74,6 +75,9 @@ $(document).ready(function () {
     // returns object of current weather data
     if (test) { console.log("getCurWeather - loc:", loc); }
     if (test) { console.log("getCurWeather - toloc:",typeof loc); }
+
+    // clear search field
+    $('#city-search').val("");
 
     if (typeof loc === "object") {
       city = `lat=${loc.latitude}&lon=${loc.longitude}`;
@@ -255,9 +259,23 @@ $(document).ready(function () {
     }); 
   };
 
+  function updateCityStore(city) {
+    let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
+    cityList.push(city); 
+    cityList.sort();
+
+    // removes dulicate cities
+    for (let i=1; i<cityList.length; i++) {
+       if (cityList[i] === cityList[i-1]) cityList.splice(i,1);
+    }
+
+    //stores in local storage
+    localStorage.setItem('cityList', JSON.stringify(cityList));
+  };
+
   function getHistory() {
     // function to pull city history from local memory
-    if (test) { console.log('getHistory'); }
+    if (test) console.log('getHistory');
     let historyArr = [];
 
     return historyArr;
