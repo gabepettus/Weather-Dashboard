@@ -2,7 +2,9 @@ $(document).ready(function () {
   let test = true;
   // use school key inorder to get forecast data
   const apiKey = "166a433c57516f51dfab1f7edaed8413";
-
+  let url = 'https://api.openweathermap.org/data/2.5/';
+  let requestType = ""; 
+  let query ="";
   //
 
   // pull current location
@@ -42,8 +44,7 @@ $(document).ready(function () {
 
     function success(position) {
       if (test) { console.log(" success"); }
-      if (test) { console.log("latitude: ", position.coords.latitude); }
-      if (test) { console.log("longitude: ", position.coords.longitude); }
+      if (test) { console.log("  location", position); }
 
       location = {
         latitude: position.coords.latitude,
@@ -52,7 +53,7 @@ $(document).ready(function () {
       }
       if (test) { console.log(" success location", location); }
       getCurWeather(location);
-      return location;
+      getForecastWeather(location);
     }
 
     function error() {
@@ -71,15 +72,21 @@ $(document).ready(function () {
   function getCurWeather(loc) {
     // function to get current weather
     // returns object of current weather data
-    if (test) { console.log(`getCurWeather - loc: ${loc}`); }
+    if (test) { console.log("getCurWeather - loc:", loc); }
+    if (test) { console.log("getCurWeather - toloc:",typeof loc); }
 
-    const city = loc;
-    // object in which to daily weather results
-    let weatherObj = {};
+    if (typeof loc === "object") {
+      city = `lat=${loc.latitude}&lon=${loc.longitude}`;
+    } else {
+      city = `q=${loc}`;
+    }
 
     // set queryURL based on type of query
-    let queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${apiKey}`;
+    requestType = 'weather';
+    query = `?${city}&units=imperial&appid=${apiKey}`;
+    queryURL = `${url}${requestType}${query}`;
 
+    if (test) console.log(`cur queryURL: ${queryURL}`);
     // Create an AJAX call to retrieve data Log the data in console
     $.ajax({
       url: queryURL,
@@ -87,32 +94,40 @@ $(document).ready(function () {
     }).then(function (response) {
       console.log(response);
 
+
       weatherObj = {
-        city: response.name,
+        city: `${response.name}`,
         wind: response.wind.speed,
         humidity: response.main.humidity,
         temp: response.main.temp,
         date: (convertDate(response.dt))[0],
-        uvHTML: getUvIndex()
       }
 
       // calls function to draw results to page
       drawCurWeather(weatherObj);
+      getUvIndex(loc);
     });
   };
 
   function getForecastWeather(loc) {
     // function to get 5 day forecast data
     // returns array of daily weather objects
-    if (test) { console.log(`getForecastWeather - loc: ${loc}`); }
-    const city = loc;
+    if (test) { console.log("getForecastWeather - loc:", loc); }
+
+    if (typeof loc === "object") {
+      city = `lat=${loc.latitude}&lon=${loc.longitude}`;
+    } else {
+      city = `q=${loc}`;
+    }
 
     // array to hold all the days of results
     let weatherArr = [];
     let weatherObj = {};
 
     // set queryURL based on type of query
-    queryURL = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&cnt=5&units=imperial&appid=${apiKey}`;
+    requestType = 'forecast/daily';
+    query = `?${city}&cnt=6&units=imperial&appid=${apiKey}`;
+    queryURL = `${url}${requestType}${query}`;
 
     // Create an AJAX call to retrieve data Log the data in console
     $.ajax({
@@ -121,7 +136,7 @@ $(document).ready(function () {
     }).then(function (response) {
       console.log(response);
 
-      for (let i = 0; i < response.list.length; i++) {
+      for (let i = 1; i < response.list.length; i++) {
         let cur = response.list[i]
         // TODO check for errors/no data
         weatherObj = {
@@ -143,11 +158,11 @@ $(document).ready(function () {
     // function to draw  weather all days
     // need logic to pick variables
     if (test) { console.log('drawCurWeather - cur:', cur); }
+    $('#forecast').empty(); 
     $('#cityName').text(cur.city + " (" + cur.date + ")");
     $('#curTemp').text("Temp: " + cur.temp + " F");
     $('#curHum').text("Humidity: " + cur.humidity + "%");
     $('#curWind').text("Windspeed: " + cur.wind + " MPH");
-    $('#curUv').html(cur.uvHTML);
   };
 
   function drawForecast(cur) {
@@ -192,17 +207,53 @@ $(document).ready(function () {
     }
   };
 
-  function getUvIndex() {
+  function getUvIndex(loc) {
     if (test) { console.log('getUvIndex'); }
     // function to color uv index
-    let title = '<span>UV Index: </span>';
-    let color = title + '<span style="background-color: blue; padding: 0 7px 0 7px;">5</span>';
-    //TODO logic for color
-    // $(this).attr('background-color',color);
-    return color;
-  };
 
-  // weather icon??? part of api?
+    if (typeof loc === "object") {
+      city = `lat=${parseInt(loc.latitude)}&lon=${parseInt(loc.longitude)}`;
+    } else {
+      city = `q=${loc}`;
+    }
+
+    // array to hold all the days of results
+
+    // set queryURL based on type of query
+    requestType = 'uvi';
+    query = `?${city}&appid=${apiKey}`;
+    queryURL = `${url}${requestType}${query}`;
+
+    // Create an AJAX call to retrieve data Log the data in console
+    $.ajax({
+      url: queryURL,
+      method: 'GET'
+    }).then(function (response) {
+      console.log("uvi",response);
+      let bkcolor = "violet";
+      
+      if (test) response.value = 7.1234567;
+
+      let uv = parseFloat(response.value);
+      console.log("uv",uv)
+      console.log("type of uv",typeof uv);
+
+      if (uv < 3) { 
+        bkcolor = 'green';
+      } else if (uv < 6) { 
+        bkcolor = 'yellow';
+      } else if (uv < 8) { 
+        bkcolor = 'orange';
+      } else if (uv < 11) { 
+        bkcolor = 'red';
+      }
+
+      let title = '<span>UV Index: </span>';
+      let color = title + `<span style="background-color: ${bkcolor}; padding: 0 7px 0 7px;">${response.value}</span>`;
+
+      $('#curUv').html(color);
+    }); 
+  };
 
   function getHistory() {
     // function to pull city history from local memory
@@ -212,6 +263,6 @@ $(document).ready(function () {
     return historyArr;
   };
 
+  // will get location when page initializes
   const location = getCurLocation();
-  if (test) { console.log("main location :", location) };
 });
