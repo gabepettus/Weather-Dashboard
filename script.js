@@ -115,6 +115,8 @@ $(document).ready(function () {
     }).then(function (response) {
       console.log(response);
 
+  	  let iconCode = response.weather[0].icon;
+      let iconurl = `http://openweathermap.org/img/w/${iconCode}.png`;
 
       weatherObj = {
         city: `${response.name}`,
@@ -122,7 +124,9 @@ $(document).ready(function () {
         humidity: response.main.humidity,
         temp: response.main.temp,
         date: (convertDate(response.dt))[0],
+        icon: iconurl
       }
+
 
       // calls function to draw results to page
       drawCurWeather(weatherObj);
@@ -183,6 +187,7 @@ $(document).ready(function () {
     if (test) { console.log('drawCurWeather - cur:', cur); }
     $('#forecast').empty(); 
     $('#cityName').text(cur.city + " (" + cur.date + ")");
+    $('#curWeathIcn').attr({src: cur.icon, id: 'icon'});
     $('#curTemp').text("Temp: " + cur.temp + " F");
     $('#curHum').text("Humidity: " + cur.humidity + "%");
     $('#curWind').text("Windspeed: " + cur.wind + " MPH");
