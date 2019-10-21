@@ -8,15 +8,31 @@ $(document).ready(function () {
   //
 
   // pull current location
-  $('#getWeather').on('click', function () {
+    $('#getWeather,#past-cities').on('click', function () {
+    if (test) console.log("on click");
     // get location from user input box
-    let location = $('#city-search').val().trim().toUpperCase();
+    let e = $(event.target)[0];
+    if (test) console.log("e:",e);
+    if (test) console.log("e.className:",e.className);
+    let location = "";
+
+    if (e.id === "getWeather" || e.id === "getWeatherId") {
+      if (test) console.log("getWeather");
+      location = $('#city-search').val().trim().toUpperCase();
+    } else if ( e.className === ("cityList") ) {
+      if (test) console.log("cityList");
+      location = e.innerText;
+    }
+
+    // should make this generic to use this on the area clicked
+    // let location = $(this).val().trim().toUpperCase();
     if (test) { console.log('location:' + location); }
+    if (location == "") return;
 
     updateCityStore(location);
     getCurWeather(location);
     getForecastWeather(location);
-  });
+   });
 
   function convertDate(epoch) {
     // function to convert unix epoch to local time
@@ -76,6 +92,7 @@ $(document).ready(function () {
     if (test) { console.log("getCurWeather - loc:", loc); }
     if (test) { console.log("getCurWeather - toloc:",typeof loc); }
 
+    drawHistory();
     // clear search field
     $('#city-search').val("");
 
@@ -109,7 +126,7 @@ $(document).ready(function () {
 
       // calls function to draw results to page
       drawCurWeather(weatherObj);
-      getUvIndex(loc);
+      getUvIndex(response);
     });
   };
 
@@ -117,6 +134,8 @@ $(document).ready(function () {
     // function to get 5 day forecast data
     // returns array of daily weather objects
     if (test) { console.log("getForecastWeather - loc:", loc); }
+
+
 
     if (typeof loc === "object") {
       city = `lat=${loc.latitude}&lon=${loc.longitude}`;
@@ -212,14 +231,14 @@ $(document).ready(function () {
   };
 
   function getUvIndex(loc) {
-    if (test) { console.log('getUvIndex'); }
+    if (test) { console.log('getUvIndex loc:',loc); }
     // function to color uv index
 
-    if (typeof loc === "object") {
-      city = `lat=${parseInt(loc.latitude)}&lon=${parseInt(loc.longitude)}`;
-    } else {
-      city = `q=${loc}`;
-    }
+    // if (typeof loc === "object") {
+      city = `lat=${parseInt(loc.coord.lat)}&lon=${parseInt(loc.coord.lon)}`;
+    // } else {
+      // city = `q=${loc}`;
+    // }
 
     // array to hold all the days of results
 
@@ -236,7 +255,7 @@ $(document).ready(function () {
       console.log("uvi",response);
       let bkcolor = "violet";
       
-      if (test) response.value = 7.1234567;
+      // if (test) response.value = 7.1234567;
 
       let uv = parseFloat(response.value);
       console.log("uv",uv)
@@ -273,12 +292,19 @@ $(document).ready(function () {
     localStorage.setItem('cityList', JSON.stringify(cityList));
   };
 
-  function getHistory() {
+  function drawHistory() {
     // function to pull city history from local memory
     if (test) console.log('getHistory');
-    let historyArr = [];
+    let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
 
-    return historyArr;
+    $('#past-cities').empty();
+    cityList.forEach ( function (city) {
+      let cityNameDiv = $('<div>');
+      cityNameDiv.addClass("cityList");
+      cityNameDiv.attr("value",city);
+      cityNameDiv.text(city);
+      $('#past-cities').append(cityNameDiv);
+    });
   };
 
   // will get location when page initializes
