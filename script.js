@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  let test = true;
+  let test = false;
   // use school key inorder to get forecast data
   const apiKey = "166a433c57516f51dfab1f7edaed8413";
   let url = 'https://api.openweathermap.org/data/2.5/';
@@ -111,14 +111,14 @@ $(document).ready(function () {
       url: queryURL,
       method: 'GET'
     }).then(function (response) {
-      console.log(response);
+      if (test) console.log(response);
 
       weatherObj = {
         city: `${response.name}`,
         wind: response.wind.speed,
         humidity: response.main.humidity,
         temp: response.main.temp,
-        date: (convertDate(response.dt))[0],
+        date: (convertDate(response.dt))[1],
         icon: `http://openweathermap.org/img/w/${response.weather[0].icon}.png`,
         desc: response.weather[0].description
       }
@@ -156,7 +156,7 @@ $(document).ready(function () {
       url: queryURL,
       method: 'GET'
     }).then(function (response) {
-      console.log("getForecast response",response);
+      if (test) console.log("getForecast response",response);
 
       for (let i = 1; i < response.list.length; i++) {
         let cur = response.list[i]
@@ -182,7 +182,6 @@ $(document).ready(function () {
     // need logic to pick variables
     if (test) { console.log('drawCurWeather - cur:', cur); }
 
-    console.log(cur.icon);
     $('#forecast').empty(); 
     $('#cityName').text(cur.city + " (" + cur.date + ")");
     $('#curWeathIcn').attr("src", cur.icon);
@@ -232,7 +231,6 @@ $(document).ready(function () {
       $cardBody.append($cardTitle);
       $colmx1.append($cardBody);
 
-      console.log("should be this", $colmx1)
       $('#forecast').append($colmx1);
     }
   };
@@ -253,14 +251,11 @@ $(document).ready(function () {
       url: queryURL,
       method: 'GET'
     }).then(function (response) {
-      console.log("uvi",response);
       let bkcolor = "violet";
       
       // if (test) response.value = 7.1234567;
 
       let uv = parseFloat(response.value);
-      console.log("uv",uv)
-      console.log("type of uv",typeof uv);
 
       if (uv < 3) { 
         bkcolor = 'green';
