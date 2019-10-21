@@ -12,8 +12,6 @@ $(document).ready(function () {
     if (test) console.log("on click");
     // get location from user input box
     let e = $(event.target)[0];
-    if (test) console.log("e:",e);
-    if (test) console.log("e.className:",e.className);
     let location = "";
 
     if (e.id === "getWeather" || e.id === "getWeatherId") {
@@ -115,18 +113,15 @@ $(document).ready(function () {
     }).then(function (response) {
       console.log(response);
 
-  	  let iconCode = response.weather[0].icon;
-      let iconurl = `http://openweathermap.org/img/w/${iconCode}.png`;
-
       weatherObj = {
         city: `${response.name}`,
         wind: response.wind.speed,
         humidity: response.main.humidity,
         temp: response.main.temp,
         date: (convertDate(response.dt))[0],
-        icon: iconurl
+        icon: `http://openweathermap.org/img/w/${response.weather[0].icon}.png`,
+        desc: response.weather[0].description
       }
-
 
       // calls function to draw results to page
       drawCurWeather(weatherObj);
@@ -161,13 +156,14 @@ $(document).ready(function () {
       url: queryURL,
       method: 'GET'
     }).then(function (response) {
-      console.log(response);
+      console.log("getForecast response",response);
 
       for (let i = 1; i < response.list.length; i++) {
         let cur = response.list[i]
         // TODO check for errors/no data
         weatherObj = {
           weather: cur.weather[0].description,
+          icon: `http://openweathermap.org/img/w/${cur.weather[0].icon}.png`,
           minTemp: cur.temp.min,
           maxTemp: cur.temp.max,
           humidity: cur.humidity,
@@ -185,9 +181,11 @@ $(document).ready(function () {
     // function to draw  weather all days
     // need logic to pick variables
     if (test) { console.log('drawCurWeather - cur:', cur); }
+
+    console.log(cur.icon);
     $('#forecast').empty(); 
     $('#cityName').text(cur.city + " (" + cur.date + ")");
-    $('#curWeathIcn').attr({src: cur.icon, id: 'icon'});
+    $('#curWeathIcn').attr("src", cur.icon);
     $('#curTemp').text("Temp: " + cur.temp + " F");
     $('#curHum').text("Humidity: " + cur.humidity + "%");
     $('#curWind').text("Windspeed: " + cur.wind + " MPH");
@@ -197,17 +195,20 @@ $(document).ready(function () {
     if (test) { console.log('drawForecast - cur:', cur); }
 
     for (let i = 0; i < cur.length; i++) {
-      //
       let $colmx1 = $('<div class="col mx-1">');
       let $cardBody = $('<div class="card-body forecast-card">');
       let $cardTitle = $('<h5 class="card-title">');
       $cardTitle.text(cur[i].date);
 
+
       let $ul = $('<ul>');
 
       let $iconLi = $('<li>');
-      let $iconI = $('<i>');
-      $iconI.attr = $('alt', cur[i].weather);
+      let $iconI = $('<img>');
+      $iconI.attr('src', cur[i].icon);
+
+      let $weathLi = $('<li>');
+      $weathLi.text(cur[i].weather);
 
       let $tempMinLi = $('<li>');
       $tempMinLi.text('Min Temp: ' + cur[i].minTemp + " F");
@@ -222,6 +223,7 @@ $(document).ready(function () {
       $iconLi.append($iconI);
 
       $ul.append($iconLi);
+      $ul.append($weathLi);
       $ul.append($tempMinLi);
       $ul.append($tempMaxLi);
       $ul.append($humLi);
@@ -230,22 +232,16 @@ $(document).ready(function () {
       $cardBody.append($cardTitle);
       $colmx1.append($cardBody);
 
-      //  $('#forecast').append($colmx1);
+      console.log("should be this", $colmx1)
       $('#forecast').append($colmx1);
     }
   };
 
-  function getUvIndex(loc) {
-    if (test) { console.log('getUvIndex loc:',loc); }
+  function getUvIndex(uvLoc) {
+    if (test) { console.log('getUvIndex loc:',uvLoc); }
     // function to color uv index
 
-    // if (typeof loc === "object") {
-      city = `lat=${parseInt(loc.coord.lat)}&lon=${parseInt(loc.coord.lon)}`;
-    // } else {
-      // city = `q=${loc}`;
-    // }
-
-    // array to hold all the days of results
+      city = `lat=${parseInt(uvLoc.coord.lat)}&lon=${parseInt(uvLoc.coord.lon)}`;
 
     // set queryURL based on type of query
     requestType = 'uvi';
